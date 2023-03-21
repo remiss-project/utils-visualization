@@ -8,7 +8,8 @@ from matplotlib import dates
 @click.command()
 @click.argument('infile')
 @click.argument('outfile')
-def main(infile, outfile):
+@click.option('--xlocator', default=7, show_default=True)
+def main(infile, outfile, xlocator):
     counts = pd.read_csv(infile)
     counts['start'] = counts['start'].apply(lambda x: x[:10])
     counts = counts.sort_values(['start', 'query'], ascending=False)
@@ -19,10 +20,7 @@ def main(infile, outfile):
         )
     else:
         ax = sns.lineplot(data=counts, x='start', y=granularity+'_count')
-    if granularity == 'day':
-        ax.xaxis.set_major_locator(dates.DayLocator(interval=7))
-    else:
-        ax.xaxis.set_major_locator(dates.DayLocator(interval=1))
+    ax.xaxis.set_major_locator(dates.DayLocator(interval=xlocator))
     plt.xticks(rotation=90)
     plt.xlabel(granularity)
     plt.ylabel('tweets')
