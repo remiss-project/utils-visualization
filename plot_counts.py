@@ -6,8 +6,8 @@ from matplotlib import dates
 
 
 @click.command()
-@click.argument('infile')
-@click.argument('outfile')
+@click.argument('infile', type=click.File('r'))
+@click.argument('outfile', type=click.File('bw'))
 @click.option('--xlocator', default=7, show_default=True)
 def main(infile, outfile, xlocator):
     counts = pd.read_csv(infile)
