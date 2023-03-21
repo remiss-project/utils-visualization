@@ -15,10 +15,10 @@ def main(infile, outfile):
     granularity = counts.columns[-1].split('_')[0]
     if 'query' in counts.columns:
         ax = sns.lineplot(
-            data=counts, x='start', y=granularity+'_counts', hue='query'
+            data=counts, x='start', y=granularity+'_count', hue='query'
         )
     else:
-        ax = sns.lineplot(data=counts, x='start', y=granularity+'_counts')
+        ax = sns.lineplot(data=counts, x='start', y=granularity+'_count')
     if granularity == 'day':
         ax.xaxis.set_major_locator(dates.DayLocator(interval=7))
     else:
