@@ -11,15 +11,14 @@ from matplotlib import dates
 @click.option('--xlocator', default=7, show_default=True)
 def main(infile, outfile, xlocator):
     counts = pd.read_csv(infile)
+    granularity = counts.columns[-1].split('_')[0]
+    y = granularity + '_count'
     counts['start'] = counts['start'].apply(lambda x: x[:10])
     counts = counts.sort_values(['start', 'query'], ascending=False)
-    granularity = counts.columns[-1].split('_')[0]
     if 'query' in counts.columns:
-        ax = sns.lineplot(
-            data=counts, x='start', y=granularity+'_count', hue='query'
-        )
+        ax = sns.lineplot(data=counts, x='start', y=y, hue='query')
     else:
-        ax = sns.lineplot(data=counts, x='start', y=granularity+'_count')
+        ax = sns.lineplot(data=counts, x='start', y=y)
     ax.xaxis.set_major_locator(dates.DayLocator(interval=xlocator))
     plt.xticks(rotation=90)
     plt.xlabel(granularity)
