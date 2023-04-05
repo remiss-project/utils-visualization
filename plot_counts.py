@@ -14,7 +14,7 @@ def main(infile, outfile, xlocator):
     granularity = counts.columns[-1].split('_')[0]
     y = granularity + '_count'
     counts['start'] = counts['start'].apply(lambda x: x[:10])
-    counts = counts.sort_values(['start', y], ascending=False)
+    counts = counts.sort_values(['start', y], ascending=[True, False])
     if 'query' in counts.columns:
         ax = sns.lineplot(data=counts, x='start', y=y, hue='query')
     else:
