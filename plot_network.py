@@ -6,9 +6,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
-def int_to_color(x, colors, level):
-    if type(x) is not int:
-        x = x[level]
+def int_to_color(x, colors):
     if colors is None:
         colors = {
             '0': 'tab:blue',
@@ -31,17 +29,16 @@ def int_to_color(x, colors, level):
 @click.argument('layout', type=click.File('r'))
 @click.argument('communities', type=click.File('r'))
 @click.option('--colors', type=click.File('r'), default=None)
-@click.option('--level', default=0, show_default=True)
 @click.argument('outfile', type=click.Path())
-def main(layout, communities, colors, level, outfile):
+def main(layout, communities, colors, outfile):
     layout = json.load(layout)
     comm = json.load(communities)
-    nodes = sorted(list(layout))
     if colors is not None:
         colors = json.load(colors)
+    nodes = sorted(list(layout))
     x = [layout[n][0] for n in nodes if n in comm]
     y = [layout[n][1] for n in nodes if n in comm]
-    c = [int_to_color(comm[n], colors, level) for n in nodes if n in comm]
+    c = [int_to_color(comm[n], colors) for n in nodes if n in comm]
 
     plt.clf()
     fig = plt.figure()
