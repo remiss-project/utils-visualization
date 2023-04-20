@@ -9,11 +9,8 @@ from tqdm import tqdm
 def int_to_color(x, colors, level):
     if type(x) is not int:
         x = x[level]
-    if colors is not None:
-        with open(colors) as f:
-            low = json.load(f)
-    else:
-        low = {
+    if colors is None:
+        colors = {
             '0': 'tab:blue',
             '1': 'tab:orange',
             '2': 'tab:green',
@@ -24,24 +21,24 @@ def int_to_color(x, colors, level):
             '7': 'tab:olive',
             '8': 'tab:cyan'
         }
-    if str(x) in low:
-        return low[str(x)]
+    if str(x) in colors:
+        return colors[str(x)]
     else:
         return 'tab:gray'
 
 
 @click.command()
-@click.argument('layout')
-@click.argument('communities')
-@click.option('--colors', default=None)
+@click.argument('layout', type=click.File('r'))
+@click.argument('communities', type=click.File('r'))
+@click.option('--colors', type=click.File('r'), default=None)
 @click.option('--level', default=0, show_default=True)
-@click.argument('outfile')
+@click.argument('outfile', type=click.Path())
 def main(layout, communities, colors, level, outfile):
-    with open(layout) as f:
-        layout = json.load(f)
-    with open(communities) as f:
-        comm = json.load(f)
+    layout = json.load(layout)
+    comm = json.load(communities)
     nodes = sorted(list(layout))
+    if colors is not None:
+        colors = json.load(colors)
     x = [layout[n][0] for n in nodes if n in comm]
     y = [layout[n][1] for n in nodes if n in comm]
     c = [int_to_color(comm[n], colors, level) for n in nodes if n in comm]
