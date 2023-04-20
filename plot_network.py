@@ -28,6 +28,7 @@ def plot_network(layout, comm, colors, outfile):
     plt.tight_layout()
     fig.savefig(outfile + '.pdf')
     fig.savefig(outfile + '.png')
+    plt.close()
 
 
 @click.command()
