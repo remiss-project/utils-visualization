@@ -30,7 +30,13 @@ def int_to_color(x, colors, level):
         return 'tab:gray'
 
 
-def plot_communities_layout(layout, communities, colors, level, outfile):
+@click.command()
+@click.argument('layout')
+@click.argument('communities')
+@click.option('--colors', default=None)
+@click.option('--level', default=0, show_default=True)
+@click.argument('outfile')
+def main(layout, communities, colors, level, outfile):
     with open(layout) as f:
         layout = json.load(f)
     with open(communities) as f:
@@ -48,28 +54,6 @@ def plot_communities_layout(layout, communities, colors, level, outfile):
     plt.tight_layout()
     fig.savefig(outfile + '.pdf')
     fig.savefig(outfile + '.png')
-
-
-@click.command()
-@click.argument('layout')
-@click.argument('communities_path')
-@click.option('--colors', default=None)
-@click.option('--level', default=0, show_default=True)
-@click.argument('outfile_path')
-def main(layout, communities_path, colors, level, outfile_path):
-    inextension = '.json'
-    if inextension in communities_path:
-        communities = communities_path
-        outfile = outfile_path
-        plot_communities_layout(layout, communities, colors, level, outfile)
-    else:
-        files = [f for f in os.listdir(communities_path) if inextension in f]
-        for f in tqdm(files):
-            communities = communities_path + f
-            outfile = outfile_path + f.split(inextension)[0]
-            plot_communities_layout(
-                layout, communities, colors, level, outfile
-            )
 
 
 if __name__ == '__main__':
