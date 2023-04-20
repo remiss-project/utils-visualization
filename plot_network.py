@@ -6,19 +6,12 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
+def get_default_colors():
+    directory = os.path.dirname(__file__)
+    return os.path.join(directory, 'default_community_colors.json')
+
+
 def int_to_color(x, colors):
-    if colors is None:
-        colors = {
-            '0': 'tab:blue',
-            '1': 'tab:orange',
-            '2': 'tab:green',
-            '3': 'tab:red',
-            '4': 'tab:purple',
-            '5': 'tab:brown',
-            '6': 'tab:pink',
-            '7': 'tab:olive',
-            '8': 'tab:cyan'
-        }
     if str(x) in colors:
         return colors[str(x)]
     else:
@@ -28,13 +21,12 @@ def int_to_color(x, colors):
 @click.command()
 @click.argument('layout', type=click.File('r'))
 @click.argument('communities', type=click.File('r'))
-@click.option('--colors', type=click.File('r'), default=None)
+@click.option('--colors', type=click.File('r'), default=get_default_colors())
 @click.argument('outfile', type=click.Path())
 def main(layout, communities, colors, outfile):
     layout = json.load(layout)
     comm = json.load(communities)
-    if colors is not None:
-        colors = json.load(colors)
+    colors = json.load(colors)
     nodes = sorted(list(layout))
     x = [layout[n][0] for n in nodes if n in comm]
     y = [layout[n][1] for n in nodes if n in comm]
