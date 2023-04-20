@@ -11,7 +11,7 @@ def get_default_colors():
     return os.path.join(directory, 'default_community_colors.json')
 
 
-def plot_network(layout, comm, colors, outfile):
+def plot_network(layout, comm, colors, size, outfile):
     nodes = sorted(list(layout))
     x = [layout[n][0] for n in nodes if n in comm]
     y = [layout[n][1] for n in nodes if n in comm]
@@ -22,7 +22,7 @@ def plot_network(layout, comm, colors, outfile):
 
     plt.clf()
     fig = plt.figure()
-    fig.set_size_inches(20, 20)
+    fig.set_size_inches(size, size)
     plt.scatter(x, y, c=c, marker='.', s=1)
     plt.axis('off')
     plt.tight_layout()
@@ -35,8 +35,9 @@ def plot_network(layout, comm, colors, outfile):
 @click.argument('layout', type=click.File('r'))
 @click.argument('communities', type=click.File('r'))
 @click.option('--colors', type=click.File('r'), default=get_default_colors())
+@click.option('--size', type=click.IntRange(1), default=10, show_default=True)
 @click.argument('outfile', type=click.Path())
-def main(layout, communities, colors, outfile):
+def main(layout, communities, colors, size, outfile):
     layout = json.load(layout)
     comm = json.load(communities)
     colors = json.load(colors)
