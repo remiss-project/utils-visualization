@@ -14,7 +14,7 @@ def get_default_colors():
 @click.argument('network', type=click.Path(exists=True, dir_okay=False))
 @click.argument('communities', type=click.File('r'))
 @click.option('--colors', type=click.File('r'), default=get_default_colors())
-@click.argument('outfile')
+@click.argument('outfile', type=click.File('w'))
 def main(network, communities, colors, outfile):
     graph = nx.read_gml(network)
 
@@ -30,8 +30,7 @@ def main(network, communities, colors, outfile):
     comm = {k: sorted(v, key=lambda x: -x[1])[:10] for k, v in comm.items()}
 
     for k in comm:
-        print(k, comm[k])
-        print()
+        outfile.write(k + ', ' + str(comm[k]) + '\n\n')
 
 
 if __name__ == '__main__':
