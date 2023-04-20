@@ -14,13 +14,14 @@ def get_default_colors():
 @click.argument('network', type=click.Path(exists=True, dir_okay=False))
 @click.argument('communities', type=click.File('r'))
 @click.option('--colors', type=click.File('r'), default=get_default_colors())
+@click.option('--weight', default='weight', show_default=True)
 @click.argument('outfile', type=click.File('w'))
-def main(network, communities, colors, outfile):
+def main(network, communities, colors, weight, outfile):
     graph = nx.read_gml(network)
 
     colors = json.load(colors)
     comm = json.load(communities)
-    in_degree = graph.in_degree()
+    in_degree = graph.in_degree(weight=weight)
     comm = {n: (c, in_degree[n]) for n, c in comm.items()}
     comm = {
         colors[str(c)][4:] if str(c) in colors else 'gray':
