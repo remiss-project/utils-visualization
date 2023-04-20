@@ -11,13 +11,6 @@ def get_default_colors():
     return os.path.join(directory, 'default_community_colors.json')
 
 
-def int_to_color(x, colors):
-    if str(x) in colors:
-        return colors[str(x)]
-    else:
-        return 'tab:gray'
-
-
 @click.command()
 @click.argument('layout', type=click.File('r'))
 @click.argument('communities', type=click.File('r'))
@@ -30,7 +23,10 @@ def main(layout, communities, colors, outfile):
     nodes = sorted(list(layout))
     x = [layout[n][0] for n in nodes if n in comm]
     y = [layout[n][1] for n in nodes if n in comm]
-    c = [int_to_color(comm[n], colors) for n in nodes if n in comm]
+    c = [
+        colors[str(comm[n])] if str(comm[n]) in colors else 'tab:gray'
+        for n in nodes if n in comm
+    ]
 
     plt.clf()
     fig = plt.figure()
