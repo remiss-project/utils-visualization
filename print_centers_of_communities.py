@@ -1,45 +1,29 @@
 import json
+import os
 
 import click
 import networkx as nx
 
 
-def int_to_color(x, colors):
-    if colors is not None:
-        with open(colors) as f:
-            low = json.load(f)
-    else:
-        low = {
-            '0': 'tab:blue',
-            '1': 'tab:orange',
-            '2': 'tab:green',
-            '3': 'tab:red',
-            '4': 'tab:purple',
-            '5': 'tab:brown',
-            '6': 'tab:pink',
-            '7': 'tab:olive',
-            '8': 'tab:cyan'
-        }
-    if str(x) in low:
-        return low[str(x)]
-    else:
-        return 'tab:gray'
+def get_default_colors():
+     directory = os.path.dirname(__file__)
+     return os.path.join(directory, 'default_community_colors.json')
 
 
 @click.command()
-@click.argument('network')
-@click.argument('communities')
-@click.option('--colors', default=None)
+@click.argument('network', type=click.Path(exists=True, dir_okay=False))
+@click.argument('communities', type=click.File('r'))
+@click.option('--colors', type=click.File('r'), default=get_default_colors())
 @click.argument('outfile')
 def main(network, communities, colors, outfile):
     graph = nx.read_gml(network)
 
-    with open(communities) as f:
-        comm = json.load(f)
+    colors = json.load(colors)
+    comm = json.load(communities)
     in_degree = graph.in_degree()
     comm = {n: (c, in_degree[n]) for n, c in comm.items()}
     comm = {
-        int_to_color(c, colors)[4:]:
+        colors[str(c)][4:] if str(c) in colors else 'gray':
         [(n, d) for n, (c2, d) in comm.items() if c2 == c]
         for c in range(0, 9)
     }
