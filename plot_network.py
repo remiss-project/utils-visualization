@@ -41,7 +41,7 @@ def main(layout, communities, colors, size, outfile):
     layout = json.load(layout)
     comm = json.load(communities)
     colors = json.load(colors)
-    plot_network(layout, comm, colors, outfile)
+    plot_network(layout, comm, colors, size, outfile)
 
 
 if __name__ == '__main__':
