@@ -1,5 +1,6 @@
 click
 matplotlib
+networkx
 pandas
 seaborn
 tqdm
